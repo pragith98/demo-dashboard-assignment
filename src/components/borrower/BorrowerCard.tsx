@@ -3,6 +3,7 @@ import { BorrowerPipelineStatus } from "@/enums/borrower.enum";
 import type { BorrowerPipeline } from "@/type/borrower.type";
 import { Badge } from "../ui/badge";
 import { cn, formatCurrency } from "@/lib/utils";
+import { getBorrowerStatusColor } from "@/lib/borrower.helper";
 
 interface BorrowerCardProps {
   borrower: BorrowerPipeline;
@@ -11,19 +12,6 @@ interface BorrowerCardProps {
 }
 
 function BorrowerCard({ borrower, isActive, onClick }: BorrowerCardProps) {
-  const getStatusColor = (status: BorrowerPipelineStatus) => {
-    switch (status) {
-      case BorrowerPipelineStatus.NEW:
-        return "bg-blue-100 text-blue-800";
-      case BorrowerPipelineStatus.IN_REVIEW:
-        return "bg-yellow-100 text-yellow-800";
-      case BorrowerPipelineStatus.RENEW:
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   return (
     <Card
       className={cn(
@@ -36,7 +24,7 @@ function BorrowerCard({ borrower, isActive, onClick }: BorrowerCardProps) {
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-gray-900">{borrower.name}</h3>
           <Badge
-            className={getStatusColor(
+            className={getBorrowerStatusColor(
               borrower.status as BorrowerPipelineStatus
             )}
           >
