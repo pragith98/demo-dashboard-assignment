@@ -3,6 +3,7 @@ import { ApiService } from "@/services/api.service";
 import type { Borrower, BorrowerPipeline } from "@/type/borrower.type";
 import type { Broker } from "@/type/broker.type";
 import { create } from 'zustand';
+import { toast } from "sonner"
 
 interface AppState {
   activeBorrower: Borrower | null;
@@ -11,7 +12,6 @@ interface AppState {
   activeBroker: Broker | null;
   onboardingWorkflow: string[];
   loading: boolean;
-  successAlerts: string | null;
   setActiveBorrower: (borrowerPipeline: BorrowerPipeline) => void;
   setActiveTab: (tab: string) => void;
   getFilteredBorrowers: () => void;
@@ -21,7 +21,6 @@ interface AppState {
   escalate: (id: string) => void;
   getBrokerInfo: () => void;
   getOnboardingWorkflow: () => void;
-  clearAlert: () => void;
 }
 
 export const useAppState = create<AppState>((set, get) => ({
@@ -65,7 +64,7 @@ export const useAppState = create<AppState>((set, get) => ({
   requestDocuments: async (id: string) => {
     try {
       const response = await ApiService.requestDocuments(id);
-      set({ successAlerts: response.message });
+      toast.success(response.message);
     } catch (error) {
       console.error(error);
       set({ loading: false });
@@ -75,7 +74,7 @@ export const useAppState = create<AppState>((set, get) => ({
   sendToValuer: async (id: string) => {
     try {
       const response = await ApiService.sendToValuer(id);
-      set({ successAlerts: response.message });
+      toast.success(response.message);
     } catch (error) {
       console.error(error);
       set({ loading: false });
@@ -85,7 +84,7 @@ export const useAppState = create<AppState>((set, get) => ({
   approveLone: async (id: string) => {
     try {
       const response = await ApiService.approveLone(id);
-      set({ successAlerts: response.message });
+      toast.success(response.message);
     } catch (error) {
       console.error(error);
       set({ loading: false });
@@ -95,7 +94,7 @@ export const useAppState = create<AppState>((set, get) => ({
   escalate: async (id: string) => {
     try {
       const response = await ApiService.escalate(id);
-      set({ successAlerts: response.message });
+      toast.success(response.message);
     } catch (error) {
       console.error(error);
       set({ loading: false });
@@ -124,9 +123,5 @@ export const useAppState = create<AppState>((set, get) => ({
       console.error(error);
       set({ loading: false });
     }
-  },
-
-  clearAlert: () => {
-    set({ successAlerts: null });
-  },
+  }
 }));
