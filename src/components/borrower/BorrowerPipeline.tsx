@@ -26,7 +26,7 @@ function BorrowerPipeline() {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-fit">
       <CardHeader>
         <CardTitle>Borrower Pipeline</CardTitle>
       </CardHeader>

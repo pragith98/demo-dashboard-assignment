@@ -28,7 +28,7 @@ function BorrowerDetail() {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-fit">
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-gray-900 text-xl">
@@ -42,7 +42,18 @@ function BorrowerDetail() {
             {borrower.status}
           </Badge>
         </div>
-        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+        <div 
+          className="
+            flex 
+            flex-col 
+            lg:flex-row 
+            lg:items-center 
+            gap-4 
+            mt-2 
+            text-sm 
+            text-gray-600
+          "
+        >
           <span className="flex items-center gap-1">
             <Mail className="h-4 w-4" />
             {borrower.email}
