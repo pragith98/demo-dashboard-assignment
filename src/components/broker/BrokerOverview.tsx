@@ -101,7 +101,7 @@ function BrokerOverview() {
             <AccordionTrigger className="text-xl font-semibold pt-0">
               {brokerData.name}
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="space-y-6">
               {createBrokerInfoView(brokerData)}
             </AccordionContent>
           </AccordionItem>
