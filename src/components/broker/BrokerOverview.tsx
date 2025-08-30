@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { useEffect, type ComponentType } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAppState } from "@/hooks/useAppState";
 
 interface ContactButton {
   id: number;
@@ -22,6 +23,18 @@ interface ContactButton {
 }
 
 function BrokerOverview() {
+  const {
+    activeBroker,
+    onboardingWorkflow,
+    getBrokerInfo,
+    getOnboardingWorkflow,
+  } = useAppState();
+
+  useEffect(() => {
+    getBrokerInfo();
+    getOnboardingWorkflow();
+  }, []);
+
   const contactButtons: ContactButton[] = [
     {
       id: 1,
@@ -84,6 +97,16 @@ function BrokerOverview() {
     );
   };
 
+  if (!activeBroker) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center h-96">
+          <p className="text-gray-500">No broker to view details</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="h-fit">
       <CardHeader>
@@ -92,23 +115,23 @@ function BrokerOverview() {
       <CardContent className="space-y-6">
         {/* Broker info Desktop view*/}
         <div className="hidden md:block space-y-6">
-          <h3 className="text-xl font-semibold">{brokerData.name}</h3>
-          {createBrokerInfoView(brokerData)}
+          <h3 className="text-xl font-semibold">{activeBroker.name}</h3>
+          {createBrokerInfoView(activeBroker)}
         </div>
         {/* Broker info Mobile view*/}
         <Accordion type="single" collapsible className="md:hidden">
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-xl font-semibold pt-0">
-              {brokerData.name}
+              {activeBroker.name}
             </AccordionTrigger>
             <AccordionContent className="space-y-6">
-              {createBrokerInfoView(brokerData)}
+              {createBrokerInfoView(activeBroker)}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
 
         {/* Onboarding Workflow */}
-        <OnboardingWorkflow steps={onboardingData.steps} />
+        <OnboardingWorkflow steps={onboardingWorkflow} />
 
         {/* AI Assistant */}
         <div className="flex items-center justify-between">
@@ -124,25 +147,5 @@ function BrokerOverview() {
     </Card>
   );
 }
-
-const brokerData = {
-  id: "1",
-  name: "Robert Turner",
-  deals: 16,
-  approval_rate: "75%",
-  pending: 7660,
-};
-
-const onboardingData = {
-  steps: [
-    "Deal Intake",
-    "IDV & Credit Check",
-    "Document Upload",
-    "AI Validation",
-    "Credit Committee",
-    "Approval & Docs",
-    "Funder Syndication",
-  ],
-};
 
 export default BrokerOverview;

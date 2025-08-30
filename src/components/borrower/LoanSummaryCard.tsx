@@ -3,12 +3,25 @@ import type { Borrower } from "@/type/borrower.type";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "../ui/button";
+import { useAppState } from "@/hooks/useAppState";
 
 interface LoanSummaryCardProps {
   borrower: Borrower;
 }
 
 function LoanSummaryCard({ borrower }: LoanSummaryCardProps) {
+  const { escalate } = useAppState();
+
+  const onClickEscalate = () => {
+    escalate(borrower.id);
+    console.debug("Escalate clicked!");
+  };
+
+  const isDisableButton = (): boolean => {
+    // logic here
+    return false;
+  };
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Loan Summary</h3>
@@ -50,7 +63,12 @@ function LoanSummaryCard({ borrower }: LoanSummaryCardProps) {
         </Alert>
       )}
 
-      <Button className="w-full" size="lg">
+      <Button
+        className="w-full"
+        size="lg"
+        onClick={onClickEscalate}
+        disabled={isDisableButton()}
+      >
         Escalate to Credit Committee
       </Button>
     </div>

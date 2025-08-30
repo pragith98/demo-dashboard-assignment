@@ -1,23 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BorrowerCard from "./BorrowerCard";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { BorrowerPipelineTabs, getBorrowerPipelineTabs } from "@/constants/borrower-pipline";
+import { getBorrowerPipelineTabs } from "@/constants/borrower-pipline";
+import { useAppState } from "@/hooks/useAppState";
 
 function BorrowerPipeline() {
-  const [selectedBorrowerId, setSelectedBorrowerId] = useState<null | number>(
-    null
-  );
+  const {
+    activeBorrower,
+    activeTab,
+    borrowers,
+    setActiveBorrower,
+    setActiveTab,
+    getFilteredBorrowers,
+  } = useAppState();
 
   const [sanitizedActiveValue, setSanitizedActiveValue] =
     useState<string>("active");
 
-  const [activeTab, setActiveTab] = useState<string>(BorrowerPipelineTabs.NEW);
+  useEffect(() => {
+    getFilteredBorrowers();
+  }, []);
 
-  const isSelected = (pipelineId: number): boolean => {
-    return selectedBorrowerId === pipelineId;
+  const isSelected = (borrowerId: string): boolean => {
+    if (!activeBorrower) return false;
+
+    return activeBorrower.id === borrowerId;
+  };
+
+  const onChangeTabAndFilterBorrowers = (tab: string) => {
+    setActiveTab(tab);
+    getFilteredBorrowers();
   };
 
   return (
@@ -27,7 +42,10 @@ function BorrowerPipeline() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => onChangeTabAndFilterBorrowers(value)}
+        >
           <TabsList className="grid w-full grid-cols-3">
             {getBorrowerPipelineTabs().map((tab) => (
               <TabsTrigger key={tab} value={tab}>
@@ -39,12 +57,12 @@ function BorrowerPipeline() {
           <TabsContent value={activeTab} className="mt-4">
             <div className="space-y-3">
               {/* Cards */}
-              {borrowerData.map((item) => (
+              {borrowers.map((item) => (
                 <BorrowerCard
                   key={item.id}
                   borrower={item}
                   isActive={isSelected(item.id)}
-                  onClick={(id) => setSelectedBorrowerId(id)}
+                  onClick={(borrower) => setActiveBorrower(borrower)}
                 />
               ))}
             </div>
@@ -87,22 +105,5 @@ function BorrowerPipeline() {
     </Card>
   );
 }
-
-const borrowerData = [
-  {
-    id: 1,
-    name: "Sarah Dunn",
-    loan_type: "Home Loan",
-    amount: 300000,
-    status: "Renew",
-  },
-  {
-    id: 3,
-    name: "Lisa Carter",
-    loan_type: "Home Loan",
-    amount: 450000,
-    status: "New",
-  },
-];
 
 export default BorrowerPipeline;

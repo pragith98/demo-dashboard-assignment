@@ -1,7 +1,7 @@
 import { BorrowerPipelineStatus } from "@/enums/borrower.enum";
 
 export interface BorrowerPipeline {
-  id: number;
+  id: string;
   name: string;
   loan_type: string;
   amount: number;

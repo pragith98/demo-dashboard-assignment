@@ -8,7 +8,7 @@ import { getBorrowerStatusColor } from "@/lib/borrower.helper";
 interface BorrowerCardProps {
   borrower: BorrowerPipeline;
   isActive: boolean;
-  onClick: (id: number) => void;
+  onClick: (borrower: BorrowerPipeline) => void;
 }
 
 function BorrowerCard({ borrower, isActive, onClick }: BorrowerCardProps) {
@@ -18,7 +18,7 @@ function BorrowerCard({ borrower, isActive, onClick }: BorrowerCardProps) {
         "cursor-pointer transition-all duration-200 hover:shadow-md border",
         isActive ? "ring-1" : ""
       )}
-      onClick={() => onClick(borrower.id)}
+      onClick={() => onClick(borrower)}
     >
       <CardContent>
         <div className="flex justify-between items-start mb-2">

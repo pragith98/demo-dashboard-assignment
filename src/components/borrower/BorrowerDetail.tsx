@@ -10,39 +10,59 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import LoanSummaryCard from "./LoanSummaryCard";
+import { useAppState } from "@/hooks/useAppState";
 
 function BorrowerDetail() {
+  const { activeBorrower, requestDocuments, sendToValuer, approveLone } =
+    useAppState();
+
   const onClickRequestDocuments = () => {
+    if (!activeBorrower) return;
+    requestDocuments(activeBorrower.id);
     console.debug("Request Documents clicked!");
   };
 
   const onClickSendToValuer = () => {
+    if (!activeBorrower) return;
+    sendToValuer(activeBorrower.id);
     console.debug("Send to Valuer clicked!");
   };
 
   const onClickApprove = () => {
+    if (!activeBorrower) return;
+    approveLone(activeBorrower.id);
     console.debug("Approve clicked!");
   };
+
+  if (!activeBorrower) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center h-96">
+          <p className="text-gray-500">Select a borrower to view details</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full h-fit">
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-gray-900 text-xl">
-            {borrower.name}
+            {activeBorrower.name}
           </h3>
           <Badge
             className={getBorrowerStatusColor(
-              borrower.status as BorrowerPipelineStatus
+              activeBorrower.status as BorrowerPipelineStatus
             )}
           >
-            {borrower.status}
+            {activeBorrower.status}
           </Badge>
         </div>
-        <div 
+        <div
           className="
             flex 
             flex-col 
@@ -56,15 +76,15 @@ function BorrowerDetail() {
         >
           <span className="flex items-center gap-1">
             <Mail className="h-4 w-4" />
-            {borrower.email}
+            {activeBorrower.email}
           </span>
           <span className="flex items-center gap-1">
             <Phone className="h-4 w-4" />
-            {borrower.phone}
+            {activeBorrower.phone}
           </span>
         </div>
         <p className="text-lg font-semibold mt-2">
-          {formatCurrency(borrower.loan_amount)}
+          {formatCurrency(activeBorrower.loan_amount)}
         </p>
       </CardHeader>
 
@@ -81,8 +101,8 @@ function BorrowerDetail() {
             </AccordionTrigger>
             <AccordionContent className="space-y-4">
               {/* Alerts */}
-              {borrower.ai_flags.length > 0 &&
-                borrower.ai_flags.map((flag) => (
+              {activeBorrower.ai_flags.length > 0 &&
+                activeBorrower.ai_flags.map((flag) => (
                   <Alert key={flag} variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription className="flex items-center gap-2">
@@ -115,29 +135,10 @@ function BorrowerDetail() {
         </Accordion>
 
         {/* Loan Summary */}
-        <LoanSummaryCard borrower={borrower} />
+        <LoanSummaryCard borrower={activeBorrower} />
       </CardContent>
     </Card>
   );
 }
-
-const borrower = {
-  id: "1",
-  name: "Sarah Dunn",
-  email: "sarah.dunn@example.com",
-  phone: "(355)123-4557",
-  loan_amount: 300000,
-  status: "In Review",
-  employment: "At Tech Company",
-  income: 120000,
-  existing_loan: 240000,
-  credit_score: 720,
-  source_of_funds: "Declared",
-  risk_signal: "Missing Source of Funds declaration",
-  ai_flags: [
-    "Income Inconsistent with Bank statements",
-    "High Debt-to-Income Ratio detected",
-  ],
-};
 
 export default BorrowerDetail;
