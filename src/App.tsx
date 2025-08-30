@@ -1,7 +1,9 @@
+import DashboardPage from "./pages/DashboardPage"
+
 function App() {
   return (
     <>
-      <p className="text-red-400">hello</p>
+      <DashboardPage />
     </>
   )
 }
