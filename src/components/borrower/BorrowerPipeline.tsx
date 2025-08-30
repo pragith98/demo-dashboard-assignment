@@ -4,12 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BorrowerCard from "./BorrowerCard";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-const tabs = [
-  { id: 1, name: "New" },
-  { id: 2, name: "In Review" },
-  { id: 3, name: "Approved" },
-];
+import { BorrowerPipelineTabs, getBorrowerPipelineTabs } from "@/constants/borrower-pipline";
 
 function BorrowerPipeline() {
   const [selectedBorrowerId, setSelectedBorrowerId] = useState<null | number>(
@@ -19,7 +14,7 @@ function BorrowerPipeline() {
   const [sanitizedActiveValue, setSanitizedActiveValue] =
     useState<string>("active");
 
-  const [activeTab, setActiveTab] = useState<string>(tabs[0].name);
+  const [activeTab, setActiveTab] = useState<string>(BorrowerPipelineTabs.NEW);
 
   const isSelected = (pipelineId: number): boolean => {
     return selectedBorrowerId === pipelineId;
@@ -34,9 +29,9 @@ function BorrowerPipeline() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)}>
           <TabsList className="grid w-full grid-cols-3">
-            {tabs.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.name}>
-                {tab.name}
+            {getBorrowerPipelineTabs().map((tab) => (
+              <TabsTrigger key={tab} value={tab}>
+                {tab}
               </TabsTrigger>
             ))}
           </TabsList>
